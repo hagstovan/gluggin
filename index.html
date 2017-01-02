@@ -36,6 +36,8 @@
 <script type="text/javascript">
 
 
+    chart2 = null;
+
 		//Chart 1 specific functions
         function buildChart1(jsonStatData) {
 
@@ -251,6 +253,9 @@
                 }         
             }          
  
+ 
+            var last_month = unemploymentdata[unemploymentdata.length - 1];
+            last_month = last_month[0];
    
 
             
@@ -290,10 +295,23 @@
                         enabled: false
                 },
                 chart: {
-
+                    renderTo : 'container',
 				    backgroundColor: "rgba(255, 255, 255, 0)",	
-                    borderWidth: 0               
-        },
+                    borderWidth: 0,
+                    events: {
+                    load: function () {
+
+                        this.xAxis[0].setExtremes(last_month - 65743595833, last_month);
+                        chart = this;
+                            setTimeout(function() {
+                                chart.xAxis[0].setExtremes();
+                            }, 10000);
+                        }
+
+                    }
+
+                }
+                ,
                 rangeSelector: {
                     enabled: false
                 },
@@ -667,7 +685,7 @@
         //START LOADING AND BUILDING CHART 3
         $(function() {
         	loadDataAndBuildChart1();
-    		loadDataAndBuildChart2();
+    		
             loadDataAndBuildChart3();
         });
     </script>
@@ -682,17 +700,17 @@
 					<div class="bluerectangle-left">
 						<h2>Fólkatal<h2/>
 						<div>
-							<div id="chart1" style="margin: 0 auto"></div>
+							<div id="chart1"></div>
 						</div>
 					</div>
 				</section>
 
 				<section data-background="assets/arbeidsloysi.jpg"><h1>Arbeiðsloysi</h1></section>	
-				<section data-background="assets/arbeidsloysi.jpg">
+				<section data-background="assets/arbeidsloysi.jpg" data-state="somestate">
 					<div class="bluerectangle-left">
 						<h2>Arbeiðsloysi<h2/>
 						<div>
-							<div id="chart2" style="margin: 0 auto"></div>
+							<div id="chart2" style="width: 470px;" class="fragment"></div>
 						</div>
 					</div>
 				</section>				
@@ -702,7 +720,7 @@
 					<div class="bluerectangle-left">
 						<h2>Fátækraváði<h2/>
 						<div>
-							<div id="chart3" style="margin: 0 auto"></div>
+							<div id="chart3" style="width: 470px;"></div>
 						</div>
 					</div>
 				</section>
@@ -735,6 +753,30 @@
 					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
 				]
 			});
+
+
+            Reveal.addEventListener( 'somestate', function() {
+                
+            }, false );
+
+            Reveal.addEventListener( 'fragmentshown', function( event ) {
+                // Fragmentlistener
+
+loadDataAndBuildChart2();
+
+            } );
+
+
+
+            // Slide every five seconds
+            Reveal.configure({
+              autoSlide: 5000
+            });
+
+
+
+
+
 		</script>
 
 
