@@ -1,0 +1,91 @@
+h1{
+    color: #FFF;
+    font-size: 4em !important;
+    font-family: 'Open Sans', sans-serif !important;
+    padding-top: 0.8em !important;
+    font-weight: bolder !important; 
+    text-transform: uppercase !important;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+h2{
+    color: #FFF;
+    font-size: 2em !important;
+    font-family: 'Open Sans', sans-serif !important;
+    padding-top: 0.8em !important;
+
+    font-weight: bolder !important; 
+    text-transform: uppercase !important;
+
+}
+
+.bluerectangle-right {
+    height:500px;
+    width:500px;
+    position:absolute;
+    left: 0;
+    background-color: rgba(0, 76, 128, 0.8);
+}
+
+.bluerectangle-left {
+    height:500px;
+    width:500px;
+    position:absolute;
+    right: 0;
+    background-color: rgba(0, 76, 128, 0.8);
+    -webkit-animation: fadein 2s; /* Safari, Chrome and Opera > 12.1 */
+       -moz-animation: fadein 2s; /* Firefox < 16 */
+        -ms-animation: fadein 2s; /* Internet Explorer */
+         -o-animation: fadein 2s; /* Opera < 12.1 */
+            animation: fadein 2s;
+
+}
+
+
+
+@keyframes fadein {
+  from { opacity: 0}
+  to   { opacity: 1}
+}
+@-moz-keyframes fadein { /* Firefox */
+    from {
+    height:600px;
+    width:600px;
+    position:absolute;
+    right: 0;
+    }
+    to {
+    height:500px;
+    width:500px;
+    position:absolute;
+    right: 0;
+    }
+}
+@-webkit-keyframes fadein { /* Safari and Chrome */
+    from {
+    height:500px;
+    width:500px;
+    position:absolute;
+    right: 0;
+    }
+    to {
+    height:600px;
+    width:500px;
+    position:absolute;
+    right: 0; 	    
+    }
+}
+@-o-keyframes fadein { /* Opera */
+    from {
+    height:500px;
+    width:500px;
+    position:absolute;
+    right: 0;
+    }
+    to {
+    height:500px;
+    width:500px;
+    position:absolute;
+    right: 0;
+    }
+}
