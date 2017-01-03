@@ -463,12 +463,19 @@
             var fraflytingdata = [];
             var nettoflytingdata = [];
 
+            var yaxistilflyting = [];
+            var yaxisfraflyting = [];
+
             for (var i = 0; i < fLen; i++) {
                 tilflyting = ds.Data({"changes": "IMMIUT", "village/city":"999999", "year": ds.Dimension("year").id[i]}, false).filter(n => n);
                 fraflyting = ds.Data({"changes": "EMIUT", "village/city":"999999", "year": ds.Dimension("year").id[i]}, false).filter(n => n);
 
                 for (var j = 0; j < tilflyting.length; j++) {                  
                     mon = m[j].replace('M', '-');
+
+                    yaxistilflyting.push[tilflyting[j]];
+                    yaxisfraflyting.push[-fraflyting[j]];
+
                     tilflytingdata.push([Date.parse(year[i]+mon), tilflyting[j]]);
                     fraflytingdata.push([Date.parse(year[i]+mon), -fraflyting[j]]);
                     nettoflytingdata.push([Date.parse(year[i]+mon), tilflyting[j]-fraflyting[j]]);
@@ -478,12 +485,12 @@
 
             
 
-  
+            
+            console.log(yaxistilflyting);
+            
 
 
-
-
-            console.log(tilflytingdata);
+ 
 
             var last_month = tilflytingdata[tilflytingdata.length - 1];
             last_month = last_month[0];            
@@ -551,11 +558,29 @@
                     events: {
                     load: function () {
 
+
                         this.xAxis[0].setExtremes(last_month - 65743595833, last_month);
+                        
+
+
+
                         chart_arbeidsloysi = this;
                             setTimeout(function() {
                                 chart_arbeidsloysi.xAxis[0].setExtremes();
                             }, 10000);
+
+                        var chart = this;
+
+                        function addSeries() {
+                            if (createdSeries.length > 0) {
+                                chart.addSeries(createdSeries[0]);
+                                setTimeout(addSeries, 2000);
+                                createdSeries.splice(0, 1);
+                            }
+                        }
+                        
+                        addSeries();
+
                         }
 
                     }                                
@@ -599,7 +624,7 @@
                 },
                 yAxis: {
                     title: {
-                        text: 'Fólk',
+                        text: '',
                             style: {
                             color: '#fff',
                             fontWeight: 'normal',
@@ -633,7 +658,7 @@
                         showInNavigator: true
                     }                    
                 },
-                series: createdSeries
+                series: []
             });
         }
 
@@ -1150,8 +1175,8 @@
 					</div>
 				</section>
 
-                <section data-background="assets/folkatal.jpg" data-autoslide="4000"><h1>Til- og frályting</h1></section>  
-                <section data-state="tilfraflyting" data-background="assets/folkatal.jpg">
+                <section data-background="assets/tilfraflyting.jpg" data-autoslide="4000"><h1>Til- og fráflyting</h1></section>  
+                <section data-state="tilfraflyting" data-background="assets/tilfraflyting.jpg">
                     <div class="bluerectangle-left">
                         <h2>Til- og fráflyting<h2/>
                         <div>
