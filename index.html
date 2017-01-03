@@ -73,14 +73,15 @@
 
             folkataldata.push([Date.parse(d), ultimo]);
 
-            
+            var last_month = folkataldata[folkataldata.length - 1];
+            last_month = last_month[0];            
 
 
             //Build Series
             var createdSeries = [{
                     name: 'Fólkatal',
                     data: folkataldata,
-                    color: '#2980b9',
+                    color: '#fff',
                     tooltip: {
                         valueDecimals: 0
                     }
@@ -110,9 +111,21 @@
                         enabled: false
                 },
                 chart: {
-                    type: 'area',
+                    type: 'line',
 				    backgroundColor: "rgba(255, 255, 255, 0)",	
-                    borderWidth: 0               
+                    borderWidth: 0,
+                    renderTo : 'container',
+                    events: {
+                    load: function () {
+
+                        this.xAxis[0].setExtremes(last_month - 65743595833, last_month);
+                        chart_arbeidsloysi = this;
+                            setTimeout(function() {
+                                chart_arbeidsloysi.xAxis[0].setExtremes();
+                            }, 10000);
+                        }
+
+                    }                                
         },
                 rangeSelector: {
                     enabled: false
@@ -187,7 +200,7 @@
                         lineWidth: 2,
                         marker: {
                             lineWidth: 1,
-                            lineColor: '#666666'
+                            lineColor: '#fff'
                         }
                     },
                     series: {
@@ -295,9 +308,10 @@
                         enabled: false
                 },
                 chart: {
-                    renderTo : 'container',
+                    
 				    backgroundColor: "rgba(255, 255, 255, 0)",	
                     borderWidth: 0,
+                    renderTo : 'container',
                     events: {
                     load: function () {
 
@@ -684,7 +698,7 @@
 		
         //START LOADING AND BUILDING CHART 3
         $(function() {
-        	loadDataAndBuildChart1();
+        	
     		
             loadDataAndBuildChart3();
         });
@@ -696,7 +710,7 @@
 			<div class="slides">
 
 				<section data-background="assets/folkatal.jpg"><h1>Fólkatal</h1></section>	
-				<section data-background="assets/folkatal.jpg">
+				<section data-state="folkatal" data-background="assets/folkatal.jpg">
 					<div class="bluerectangle-left">
 						<h2>Fólkatal<h2/>
 						<div>
@@ -753,6 +767,15 @@
 					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
 				]
 			});
+
+
+            Reveal.addEventListener( 'folkatal', function() {
+                
+                loadDataAndBuildChart1();
+
+            }, false );
+
+
 
 
             Reveal.addEventListener( 'arbeidsloysi', function() {
