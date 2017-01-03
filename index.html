@@ -706,11 +706,11 @@
 				</section>
 
 				<section data-background="assets/arbeidsloysi.jpg"><h1>Arbeiðsloysi</h1></section>	
-				<section data-background="assets/arbeidsloysi.jpg" data-state="somestate">
+				<section data-state="arbeidsloysi" data-background="assets/arbeidsloysi.jpg" >
 					<div class="bluerectangle-left">
 						<h2>Arbeiðsloysi<h2/>
 						<div>
-							<div id="chart2" style="width: 470px;" class="fragment"></div>
+							<div id="chart2"></div>
 						</div>
 					</div>
 				</section>				
@@ -720,7 +720,7 @@
 					<div class="bluerectangle-left">
 						<h2>Fátækraváði<h2/>
 						<div>
-							<div id="chart3" style="width: 470px;"></div>
+							<div id="chart3"></div>
 						</div>
 					</div>
 				</section>
@@ -728,7 +728,7 @@
 				<section data-background="assets/arbeidsfjold.jpg">
 					<div class="bluerectangle-right">
 						<h2>Arbeiðsfjøld<h2/>
-						<div style="background:green;">
+						<div >
 							
 						</div>
 					</div>
@@ -755,14 +755,17 @@
 			});
 
 
-            Reveal.addEventListener( 'somestate', function() {
+            Reveal.addEventListener( 'arbeidsloysi', function() {
                 
+                
+loadDataAndBuildChart2();
+
             }, false );
 
             Reveal.addEventListener( 'fragmentshown', function( event ) {
                 // Fragmentlistener
 
-    loadDataAndBuildChart2();
+    
 
             } );
 
@@ -770,7 +773,7 @@
 
             // Slide every five seconds
             Reveal.configure({
-              autoSlide: 5000
+              autoSlide: 10000
             });
 
 
