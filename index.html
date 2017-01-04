@@ -534,6 +534,269 @@
 
 
 
+//---------------------------------------------------------
+//                                CHART 3
+//---------------------------------------------------------
+            var chart3; 
+            var chart3Data;
+            var chart3CreatedSeries;
+            var chart3_last_month;
+            var chart3Timeout0;
+            var chart3Timeout1;
+            var chart3Timeout2;
+            var chart3Timeout3;
+
+            function startAnimatingChart3() {
+                clearTimeout(chart3Timeout0);
+                clearTimeout(chart3Timeout1);
+                clearTimeout(chart3Timeout2);
+                clearTimeout(chart3Timeout3);
+
+                drawChart3();
+
+                chart3Timeout0 = setTimeout(function() {
+                    chart3.addSeries(chart3CreatedSeries[0]);    
+                }, 0);
+                chart3Timeout1 = setTimeout(function() {
+                    chart3.addSeries(chart3CreatedSeries[1]);    
+                }, 2000);
+                chart3Timeout2 = setTimeout(function() {
+                    chart3.addSeries(chart3CreatedSeries[2]);    
+                }, 4000);
+
+                chart3Timeout3 =setTimeout(function () {
+                    chart3.update({xAxis: {
+                        min: null,
+                        max:null,
+                    }});
+                }, 10000);
+            }
+
+            //Chart 3 specific functions
+            function drawChart3() {
+                
+                var jsonStatData = chart3Data;
+                //Extrat Data From JSON Stat
+                ds = JSONstat(jsonStatData).Dataset(0);
+                t = ds.Dimension("year").length - 1;
+                year = ds.Dimension("year").id;
+                var fLen = year.length;
+                m = ds.Dimension("month").id;
+                    console.log(m);
+                //Format Data
+
+
+
+                var tilflytingdata = [];
+                var fraflytingdata = [];
+                var nettoflytingdata = [];
+
+                var yaxistilflyting = [];
+                var yaxisfraflyting = [];
+
+                for (var i = 0; i < fLen; i++) {
+                    tilflyting = ds.Data({ "changes": "BORNE", "village/city": "999999", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
+                    fraflyting = ds.Data({ "changes": "DEAD", "village/city": "999999", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
+
+                    for (var j = 0; j < tilflyting.length; j++) {
+                        mon = m[j].replace('M', '-');
+
+                        yaxistilflyting.push[tilflyting[j]];
+                        yaxisfraflyting.push[-fraflyting[j]];
+
+                        tilflytingdata.push([Date.parse(year[i] + mon), tilflyting[j]]);
+                        fraflytingdata.push([Date.parse(year[i] + mon), -fraflyting[j]]);
+                        nettoflytingdata.push([Date.parse(year[i] + mon), tilflyting[j] - fraflyting[j]]);
+
+                    }
+                }
+
+                var chart3_last_month = tilflytingdata[tilflytingdata.length - 1];
+                chart3_last_month = chart3_last_month[0];
+
+                //Build Series
+                var createdSeries = [{
+                    name: 'Fødd',
+                    data: tilflytingdata,
+                    color: '#7fb800',
+                    borderWidth: 0,
+                    tooltip: {
+                        valueDecimals: 0
+                    }
+                }, {
+                    name: 'Deyð',
+                    data: fraflytingdata,
+                    color: '#9b1212',
+                    borderWidth: 0,
+                    
+                    tooltip: {
+                        valueDecimals: 0
+                    }
+                }, {
+                    name: 'Burðaravlop',
+                    type: 'spline',
+                    data: nettoflytingdata,
+                    color: '#fff',
+                    borderWidth: 0,
+                    tooltip: {
+                        valueDecimals: 0
+                    },
+                    marker: {
+                        enabled: false
+                    }
+                }];
+                chart3CreatedSeries = createdSeries;
+
+
+                //Build Title
+                var title = ds.label;
+
+                //Build subtitle
+                var subtitle = ds.source;
+
+                //Build Tooltip
+                var tooltipFunction = function () {
+                    var s = '<b>' + Highcharts.dateFormat('%Y-%b', this.x) + '</b>';
+                    $.each(this.points,
+                        function (i, point) {
+                            s += '<br/>' + point.series.name + ': ' + Highcharts.numberFormat(point.y, .0, ',', '.');
+                        });
+
+                    return s;
+                }
+
+                //Build Chart
+                $('#chart3').highcharts({
+                    credits: {
+                        enabled: false
+                    },
+                    chart: {
+                        type: 'column',
+                        backgroundColor: "rgba(255, 255, 255, 0)",
+                        borderWidth: 0,
+                        renderTo: 'container',
+                        events: {
+                            load: function () {
+                                chart3 = this;
+                            }
+
+                        }
+                    },
+                    rangeSelector: {
+                        enabled: false
+                    },
+
+                    exporting: {
+                        enabled: false
+                    },
+
+                    navigator: {
+                        enabled: false
+                    },
+                    title: {
+                        text: ""
+                    },
+                    legend: {
+                        layout: 'horizontal',
+                        align: 'center',
+                        verticalAlign: 'top',
+
+                        itemStyle: {
+                            color: '#fff',
+                            fontWeight: 'normal'
+                        }
+                    },
+                    xAxis: {
+                        title: {
+                            enabled: false
+                        },
+                        type: 'datetime',
+                        min: chart3_last_month - 65743595833, 
+                        max: chart3_last_month,
+                        labels: {
+                            style: {
+                                color: '#fff',
+                                font: '11px Trebuchet MS, Verdana, sans-serif'
+                            }
+                        },
+
+                    },
+                    yAxis: {
+                        title: {
+                            text: '',
+                            style: {
+                                color: '#fff',
+                                fontWeight: 'normal',
+                                fontSize: '12px',
+                                fontFamily: 'Trebuchet MS, Verdana, sans-serif'
+                            }
+                        },
+                        lineColor: '#fff',
+                        tickColor: '#fff',
+                        labels: {
+                            formatter: function () {
+                                return Highcharts.numberFormat(this.value, 0);
+                            },
+                            style: {
+                                color: '#fff',
+                                font: '11px'
+                            }
+                        },
+                    },
+                    tooltip: {
+                        formatter: tooltipFunction,
+                        shared: true
+                    },
+                    plotOptions: {
+                        series: {
+                            stacking: 'normal',
+                            showInNavigator: true,
+                            dataGrouping:{
+                                enabled: true,
+                                approximation: "sum",
+                                units:[ ['year', null]]
+                            }
+                        }
+                    },
+                    series: []
+                });
+            }
+
+            function loadDataAndBuildChart3() {
+                POST("https://statbank.hagstova.fo/api/v1/fo/H2/IB/IB01/fo_vital_md.px", {
+                    "query": [
+                        {
+                            "code": "village/city",
+                            "selection": {
+                                "filter": "item",
+                                "values": [
+                                    "999999"
+                                ]
+                            }
+                        },
+                        {
+                            "code": "changes",
+                            "selection": {
+                                "filter": "item",
+                                "values": [
+                                    "BORNE", "DEAD"
+                                ]
+                            }
+                        }
+                    ],
+                    "response": {
+                        "format": "json-stat"
+
+                    }
+                },function(data) {
+                    chart3Data = data;
+                    drawChart3();
+                    startAnimatingChart3();
+                } );
+            }
+
+
+
 
 //---------------------------------------------------------
 //                       CHART 4
@@ -756,6 +1019,18 @@
                     startAnimatingChart4();
                 });
             }
+
+
+
+
+
+
+
+
+
+
+
+
 
             //Chart 6 specific functions
 
@@ -1005,6 +1280,7 @@
             $(function () {
                 loadDataAndBuildChart1();
                 loadDataAndBuildChart2();
+                loadDataAndBuildChart3();                
                 loadDataAndBuildChart4();
                 loadDataAndBuildChart6(); 
             });
@@ -1041,6 +1317,20 @@
                     </div>
             </div>
         </section>
+
+        <section data-background="assets/burdaravlop.jpg" data-autoslide="4000">
+            <h1>Burðaravlop</h1>
+        </section>
+        <section data-state="burdaravlop" data-background="assets/burdaravlop.jpg">
+            <div class="infobox blue">
+                <div class="background"></div>
+                <h2>Burðaravlop
+                    <h2/>
+                    <div>
+                        <div id="chart3"></div>
+                    </div>
+            </div>
+        </section>        
 
 
         <section data-background="assets/arbeidsloysi.jpg" data-background-transition="fade" data-autoslide="4000">
@@ -1111,6 +1401,10 @@
                 startAnimatingChart2();
             }, false);
 
+
+            Reveal.addEventListener('burdaravlop', function () {
+                startAnimatingChart3();
+            }, false);
 
             Reveal.addEventListener('arbeidsloysi', function () {
                 startAnimatingChart4();
