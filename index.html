@@ -189,7 +189,7 @@
                     },
                     yAxis: {
                         title: {
-                            text: 'Fólk',
+                            text: '',
                             style: {
                                 color: '#fff',
                                 fontWeight: 'normal',
@@ -209,7 +209,9 @@
                             }
                         },
                     },
-
+                    legend: {
+                        enabled: false
+                    },
 
 
                     tooltip: {
@@ -217,13 +219,9 @@
                         shared: true
                     },
                     plotOptions: {
-                        area: {
-                            stacking: 'normal',
-                            lineColor: '#fff',
-                            lineWidth: 2,
+                        line: {
                             marker: {
-                                lineWidth: 1,
-                                lineColor: '#fff'
+                                enabled: false
                             }
                         },
                         series: {
@@ -640,7 +638,6 @@
                     exporting: {
                         enabled: false
                     },
-
                     navigator: {
                         enabled: false
                     },
@@ -677,7 +674,7 @@
                     },
                     yAxis: {
                         title: {
-                            text: 'Arbeiðsloysi',
+                            text: '',
                             style: {
                                 color: '#fff',
                                 fontWeight: 'normal',
@@ -700,6 +697,9 @@
                     tooltip: {
                         shared: true
                     },
+                    legend: {
+                        enabled: false
+                    },                    
                     plotOptions: {
                         line: {
                             marker: {
