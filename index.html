@@ -185,7 +185,8 @@
                                 font: '11px Trebuchet MS, Verdana, sans-serif'
                             }
                         },
-
+                        showLastLabel: true,
+                        endOnTick: true
                     },
                     yAxis: {
                         title: {
@@ -317,7 +318,7 @@
                 year = ds.Dimension("year").id;
                 var fLen = year.length;
                 m = ds.Dimension("month").id;
-                    console.log(m);
+                    
                 //Format Data
 
 
@@ -454,7 +455,8 @@
                                 font: '11px Trebuchet MS, Verdana, sans-serif'
                             }
                         },
-
+                        showLastLabel: true,
+                        endOnTick: true
                     },
                     yAxis: {
                         title: {
@@ -582,7 +584,7 @@
                 year = ds.Dimension("year").id;
                 var fLen = year.length;
                 m = ds.Dimension("month").id;
-                    console.log(m);
+                    
                 //Format Data
 
 
@@ -719,7 +721,8 @@
                                 font: '11px Trebuchet MS, Verdana, sans-serif'
                             }
                         },
-
+                        showLastLabel: true,
+                        endOnTick: true
                     },
                     yAxis: {
                         title: {
@@ -932,7 +935,8 @@
                                 font: '11px Trebuchet MS, Verdana, sans-serif'
                             }
                         },
-
+                        showLastLabel: true,
+                        endOnTick: true
 
                     },
                     yAxis: {
@@ -1022,10 +1026,6 @@
 
 
 
-
-
-
-
 //---------------------------------------------------------
 //                                CHART 5
 //---------------------------------------------------------
@@ -1069,7 +1069,7 @@
                 year = ds.Dimension("year").id;
                 var fLen = year.length;
                 m = ds.Dimension("month").id;
-                    console.log(m);
+                    
             
             //Format Data
 
@@ -1193,7 +1193,8 @@
                                 font: '11px Trebuchet MS, Verdana, sans-serif'
                             }
                         },
-
+                        showLastLabel: true,
+                        endOnTick: true
                     },
                     yAxis: {
                         title: {
@@ -1257,10 +1258,303 @@
 
 
 
+//---------------------------------------------------------
+//                                CHART 6
+//---------------------------------------------------------
+            var dsutflutningurchart6
+            var chart6; 
+            var chart6Data;
+            var chart6CreatedSeries;
+            var chart6_last_month;
+            var chart6Timeout0;
+            var chart6Timeout1;
+            var chart6Timeout2;
+            var chart6Timeout3;
 
+            function startAnimatingChart6() {
+                clearTimeout(chart6Timeout0);
+                clearTimeout(chart6Timeout1);
+                clearTimeout(chart6Timeout2);
+                clearTimeout(chart6Timeout3);
 
+                drawChart6();
+
+                chart6Timeout0 = setTimeout(function() {
+                    chart6.addSeries(chart6CreatedSeries[0]);    
+                }, 0);
+                chart6Timeout1 = setTimeout(function() {
+                    chart6.addSeries(chart6CreatedSeries[1]);    
+                }, 2000);
+                chart6Timeout2 = setTimeout(function() {
+                    chart6.addSeries(chart6CreatedSeries[2]);    
+                }, 4000);
+
+                chart6Timeout3 =setTimeout(function () {
+                    chart6.update({xAxis: {
+                        min: null,
+                        max:null,
+                    }});
+                }, 10000);
+            }
 
             //Chart 6 specific functions
+            function drawChart6() {
+                
+                var jsonStatData = chart6Data;
+                //Extrat Data From JSON Stat
+
+
+
+                ds = JSONstat(jsonStatData).Dataset(0);
+
+                t = ds.Dimension("year").length - 1;
+                year = ds.Dimension("year").id;
+
+                var fLen = year.length;
+                m = ds.Dimension("month").id;
+
+                //Format Data
+
+
+
+                var innflutningurdata = [];
+                var fraflytingdata = [];
+                var nettoflytingdata = [];
+
+                var yaxisinnflutningur = [];
+                var yaxisfraflyting = [];
+
+                for (var i = 0; i < fLen; i++) {
+                    innflutningur = ds.Data({ "BEC-groups": "0", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
+                    fraflyting = ds.Data({ "BEC-groups": "0", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
+                    
+                    for (var j = 0; j < innflutningur.length; j++) {
+                        
+                        yaxisinnflutningur.push[innflutningur[j]];
+                        yaxisfraflyting.push[-fraflyting[j]];
+
+                        var month = m[j];
+
+                        if(month.length == 1) {
+                            month = "0" + month;
+                        }
+
+
+                        innflutningurdata.push([Date.parse(year[i] + "-" + month), innflutningur[j]]);
+                        fraflytingdata.push([Date.parse(year[i] + "-" + month), -fraflyting[j]]);
+                        nettoflytingdata.push([Date.parse(year[i] + "-" + month), innflutningur[j] - fraflyting[j]]);
+
+
+
+                    }
+                }
+
+                var chart6_last_month = innflutningurdata[innflutningurdata.length - 1];
+                chart6_last_month = chart6_last_month[0];
+
+                //Build Series
+                var createdSeries = [{
+                    name: 'Innflutningur',
+                    data: innflutningurdata,
+                    color: '#7fb800',
+                    borderWidth: 0,
+                    tooltip: {
+                        valueDecimals: 0
+                    }
+                }, {
+                    name: 'Útflutningur',
+                    data: innflutningurdata,
+                    color: '#9b1212',
+                    borderWidth: 0,
+                    
+                    tooltip: {
+                        valueDecimals: 0
+                    }
+                }, {
+                    name: 'Handilsjavni',
+                    type: 'spline',
+                    data: nettoflytingdata,
+                    color: '#fff',
+                    borderWidth: 0,
+                    tooltip: {
+                        valueDecimals: 0
+                    },
+                    marker: {
+                        enabled: false
+                    }
+                }];
+                chart6CreatedSeries = createdSeries;
+
+
+                //Build Title
+                var title = ds.label;
+
+                //Build subtitle
+                var subtitle = ds.source;
+
+                //Build Tooltip
+                var tooltipFunction = function () {
+                    var s = '<b>' + Highcharts.dateFormat('%Y-%b', this.x) + '</b>';
+                    $.each(this.points,
+                        function (i, point) {
+                            s += '<br/>' + point.series.name + ': ' + Highcharts.numberFormat(point.y, .0, ',', '.');
+                        });
+
+                    return s;
+                }
+
+                //Build Chart
+                $('#chart6').highcharts({
+                    credits: {
+                        enabled: false
+                    },
+                    chart: {
+                        type: 'column',
+                        backgroundColor: "rgba(255, 255, 255, 0)",
+                        borderWidth: 0,
+                        renderTo: 'container',
+                        events: {
+                            load: function () {
+                                chart6 = this;
+                            }
+
+                        }
+                    },
+                    rangeSelector: {
+                        enabled: false
+                    },
+
+                    exporting: {
+                        enabled: false
+                    },
+
+                    navigator: {
+                        enabled: false
+                    },
+                    title: {
+                        text: ""
+                    },
+                    legend: {
+                        layout: 'horizontal',
+                        align: 'center',
+                        verticalAlign: 'top',
+
+                        itemStyle: {
+                            color: '#fff',
+                            fontWeight: 'normal'
+                        }
+                    },
+                    xAxis: {
+                        title: {
+                            enabled: false
+                        },
+                        type: 'datetime',
+                        min: chart6_last_month - 65743595833, 
+                        max: chart6_last_month,
+                        labels: {
+                            style: {
+                                color: '#fff',
+                                font: '11px Trebuchet MS, Verdana, sans-serif'
+                            }
+                        },
+
+                    },
+                    yAxis: {
+                        title: {
+                            text: '',
+                            style: {
+                                color: '#fff',
+                                fontWeight: 'normal',
+                                fontSize: '12px',
+                                fontFamily: 'Trebuchet MS, Verdana, sans-serif'
+                            }
+                        },
+                        lineColor: '#fff',
+                        tickColor: '#fff',
+                        labels: {
+                            formatter: function () {
+                                return Highcharts.numberFormat(this.value, 0);
+                            },
+                            style: {
+                                color: '#fff',
+                                font: '11px'
+                            }
+                        },
+                    },
+                    tooltip: {
+                        formatter: tooltipFunction,
+                        shared: true
+                    },
+                    plotOptions: {
+                        series: {
+                            stacking: 'normal',
+                            showInNavigator: true,
+                            dataGrouping:{
+                                enabled: true,
+                                approximation: "sum",
+                                units:[ ['year', null]]
+                            }
+                        }
+                    },
+                    series: []
+                });
+            }
+
+            function loadDataAndBuildChart6() {
+                POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_innbec.px", {
+                    "query": [
+                        {
+                              "code": "BEC-groups",
+                              "selection": {
+                                "filter": "item",
+                                "values": [
+                                  "0"
+                                ]
+                              }
+                            },
+                        {
+                          "code": "month",
+                          "selection": {
+                            "filter": "item",
+                            "values": [
+                              "1",
+                              "2",
+                              "3",
+                              "4",
+                              "5",
+                              "6",
+                              "7",
+                              "8",
+                              "9",
+                              "10",
+                              "11",
+                              "12"
+                            ]
+                          }
+                        }
+                    ],
+                    "response": {
+                        "format": "json-stat"
+
+                    }
+
+                },function(data) {
+                    chart6Data = data;
+                    drawChart6();
+                    startAnimatingChart6();
+                } );
+            }
+
+
+
+
+
+
+
+
+
+
+            //Chart 10 specific functions
 
             //Ein variabul sum inniheldur data frá eurostat
             var eurods = null;
@@ -1270,7 +1564,7 @@
             //			val: []
             //		};
 
-            function buildChart6(jsonStatData) {
+            function buildChart10(jsonStatData) {
 
                 //Extrat Data From JSON Stat
                 ds = JSONstat(jsonStatData).Dataset(0);
@@ -1373,7 +1667,7 @@
                 }
 
                 //Build Chart
-                $('#chart6').highcharts({
+                $('#chart10').highcharts({
                     credits: {
                         enabled: false
                     },
@@ -1472,7 +1766,7 @@
                 });
             }
 
-            function loadDataAndBuildChart6() {
+            function loadDataAndBuildChart10() {
                 //Vit loada fyrst dáta frá Euro Stat
                 JSONstat("https://ec.europa.eu/eurostat/wdds/rest/data/v2.1/json/en/tespm010?precision=1", function () {
 
@@ -1485,7 +1779,7 @@
                         "response": {
                             "format": "json-stat"
                         }
-                    }, buildChart6);
+                    }, buildChart10);
                 });
 
 
@@ -1511,7 +1805,8 @@
                 loadDataAndBuildChart3();                
                 loadDataAndBuildChart4();
                 loadDataAndBuildChart5();
-                loadDataAndBuildChart6(); 
+                loadDataAndBuildChart6();
+                loadDataAndBuildChart10(); 
             });
 </script>
 
@@ -1592,7 +1887,21 @@
         </section>
 
 
-        <section data-background="assets/fatakravadi.jpg" data-autoslide="4000">
+        <section data-background="assets/burdaravlop.jpg" data-autoslide="4000">
+            <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />Inn- og útflutningur</h1>
+        </section>
+        <section data-state="innutflutningur" data-background="assets/burdaravlop.jpg">
+            <div class="infobox blue">
+                <div class="background"></div>
+                <h2>Inn- og útflutningur
+                    <h2/>
+                    <div>
+                        <div id="chart6"></div>
+                    </div>
+            </div>
+        </section>        
+
+<!--        <section data-background="assets/fatakravadi.jpg" data-autoslide="4000">
             <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />Fátækraváði</h1>
         </section>
         <section data-background="assets/fatakravadi.jpg">
@@ -1601,7 +1910,7 @@
                 <h2>Fátækraváði
                     <h2/>
                     <div>
-                        <div id="chart6"></div>
+                        <div id="chart10"></div>
                     </div>
             </div>
         </section>
@@ -1617,7 +1926,7 @@
 
                     </div>
             </div>
-        </section>
+        </section>-->
 
     </div>
 </div>
@@ -1659,6 +1968,14 @@
             Reveal.addEventListener('lontakarar', function () {
                 startAnimatingChart5();
             }, false);
+
+            Reveal.addEventListener('innutflutningur', function () {
+                startAnimatingChart6();
+            }, false);
+
+
+
+
 
             Reveal.addEventListener('fragmentshown', function (event) {
                 // Fragmentlistener
