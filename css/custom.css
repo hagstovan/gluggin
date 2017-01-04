@@ -19,6 +19,15 @@ h2{
 
 }
 
+.logo{
+    width: 1.4em;
+
+
+    position: relative;
+    top: 0.4em;
+    right: 0.1em;
+}
+
 .infobox {
     width: 960px;
     height: 500px;
