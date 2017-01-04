@@ -1261,7 +1261,7 @@
 //---------------------------------------------------------
 //                                CHART 6
 //---------------------------------------------------------
-            var dsutflutningurchart6
+            
             var chart6; 
             var chart6Data;
             var chart6CreatedSeries;
@@ -1301,37 +1301,58 @@
             function drawChart6() {
                 
                 var jsonStatData = chart6Data;
+                var jsonStatUtflutningurData= chart6bData;
+
+
                 //Extrat Data From JSON Stat
-
-
 
                 ds = JSONstat(jsonStatData).Dataset(0);
 
-                t = ds.Dimension("year").length - 1;
-                year = ds.Dimension("year").id;
 
+                dsutflutningur = JSONstat(jsonStatUtflutningurData).Dataset(0);
+
+                t = dsutflutningur.Dimension("year").length - 1;
+                year = dsutflutningur.Dimension("year").id;
+
+                yearinnflutningur = ds.Dimension("year").id;
+                yearinnflutningurlength = yearinnflutningur.length
                 var fLen = year.length;
-                m = ds.Dimension("month").id;
+
+                yearinnflutningurutflutningurdifference = yearinnflutningurlength - fLen;
+
+                console.log(yearinnflutningurutflutningurdifference);
+
+
+
+                m = dsutflutningur.Dimension("month").id;
 
                 //Format Data
 
+                
 
 
                 var innflutningurdata = [];
-                var fraflytingdata = [];
+                var utflutningurdata = [];
                 var nettoflytingdata = [];
 
                 var yaxisinnflutningur = [];
-                var yaxisfraflyting = [];
+                var yaxisutflutningur = [];
 
                 for (var i = 0; i < fLen; i++) {
-                    innflutningur = ds.Data({ "BEC-groups": "0", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
-                    fraflyting = ds.Data({ "BEC-groups": "0", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
+
+
+                    innflutningur = ds.Data({ "BEC-groups": "0", "year": ds.Dimension("year").id[i + yearinnflutningurutflutningurdifference] }, false).filter(function(n) { return n; });
                     
-                    for (var j = 0; j < innflutningur.length; j++) {
+                    
+
+                    utflutningur = dsutflutningur.Data({ "unit": "0", "commodity group": "0", "year": dsutflutningur.Dimension("year").id[i] }, false).filter(function(n) { return n; });
+                    
+                    
+
+                    for (var j = 0; j < utflutningur.length; j++) {
                         
                         yaxisinnflutningur.push[innflutningur[j]];
-                        yaxisfraflyting.push[-fraflyting[j]];
+                        yaxisutflutningur.push[-utflutningur[j]];
 
                         var month = m[j];
 
@@ -1341,8 +1362,8 @@
 
 
                         innflutningurdata.push([Date.parse(year[i] + "-" + month), innflutningur[j]]);
-                        fraflytingdata.push([Date.parse(year[i] + "-" + month), -fraflyting[j]]);
-                        nettoflytingdata.push([Date.parse(year[i] + "-" + month), innflutningur[j] - fraflyting[j]]);
+                        utflutningurdata.push([Date.parse(year[i] + "-" + month), -utflutningur[j]]);
+                        nettoflytingdata.push([Date.parse(year[i] + "-" + month), utflutningur[j] - innflutningur[j]]);
 
 
 
@@ -1363,7 +1384,7 @@
                     }
                 }, {
                     name: 'Útflutningur',
-                    data: innflutningurdata,
+                    data: utflutningurdata,
                     color: '#9b1212',
                     borderWidth: 0,
                     
@@ -1540,13 +1561,64 @@
 
                 },function(data) {
                     chart6Data = data;
-                    drawChart6();
-                    startAnimatingChart6();
+                    loadDataAndBuildChart6b(); 
                 } );
             }
 
 
+            function loadDataAndBuildChart6b() {
+                POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_ututgr.px", {
+                    "query": [
+                        {
+                          "code": "unit",
+                          "selection": {
+                            "filter": "item",
+                            "values": [
+                              "0"
+                            ]
+                          }
+                        },
+                        {
+                              "code": "commodity group",
+                              "selection": {
+                                "filter": "item",
+                                "values": [
+                                  "0"
+                                ]
+                              }
+                            },
+                        {
+                          "code": "month",
+                          "selection": {
+                            "filter": "item",
+                            "values": [
+                              "1",
+                              "2",
+                              "3",
+                              "4",
+                              "5",
+                              "6",
+                              "7",
+                              "8",
+                              "9",
+                              "10",
+                              "11",
+                              "12"
+                            ]
+                          }
+                        }
+                    ],
+                    "response": {
+                        "format": "json-stat"
 
+                    }
+
+                },function(data) {
+                    chart6bData = data;
+                    drawChart6();
+                    startAnimatingChart6();
+                } );
+            }
 
 
 
@@ -1873,10 +1945,10 @@
         </section>
 
 
-        <section data-background="assets/arbeidsloysi.jpg" data-background-transition="fade" data-autoslide="4000">
+        <section data-background="assets/lontakarar.jpg" data-background-transition="fade" data-autoslide="4000">
             <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />Løntakarar</h1>
         </section>
-        <section data-state="lontakarar" data-background="assets/arbeidsloysi.jpg">
+        <section data-state="lontakarar" data-background="assets/lontakarar.jpg">
             <div class="infobox blue">
                 <div class="background"></div>
                 <h2>Løntakarar<h2/>
@@ -1887,10 +1959,10 @@
         </section>
 
 
-        <section data-background="assets/burdaravlop.jpg" data-autoslide="4000">
+        <section data-background="assets/innutflutningur.jpg" data-autoslide="4000">
             <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />Inn- og útflutningur</h1>
         </section>
-        <section data-state="innutflutningur" data-background="assets/burdaravlop.jpg">
+        <section data-state="innutflutningur" data-background="assets/innutflutningur.jpg">
             <div class="infobox blue">
                 <div class="background"></div>
                 <h2>Inn- og útflutningur
