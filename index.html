@@ -1026,6 +1026,234 @@
 
 
 
+//---------------------------------------------------------
+//                                CHART 5
+//---------------------------------------------------------
+            var chart5; 
+            var chart5Data;
+            var chart5CreatedSeries;
+            var chart5_last_month;
+            var chart5Timeout0;
+            var chart5Timeout1;
+            var chart5Timeout3;
+
+            function startAnimatingChart5() {
+                clearTimeout(chart5Timeout0);
+                clearTimeout(chart5Timeout1);
+                clearTimeout(chart5Timeout3);
+
+                drawChart5();
+
+                chart5Timeout0 = setTimeout(function() {
+                    chart5.addSeries(chart5CreatedSeries[0]);    
+                }, 0);
+                chart5Timeout1 = setTimeout(function() {
+                    chart5.addSeries(chart5CreatedSeries[1]);    
+                }, 2000);
+
+                chart5Timeout3 =setTimeout(function () {
+                    chart5.update({xAxis: {
+                        min: null,
+                        max:null,
+                    }});
+                }, 10000);
+            }
+
+            //Chart 5 specific functions
+            function drawChart5() {
+                
+                var jsonStatData = chart5Data;
+                //Extrat Data From JSON Stat
+                ds = JSONstat(jsonStatData).Dataset(0);
+                t = ds.Dimension("year").length - 1;
+                year = ds.Dimension("year").id;
+                var fLen = year.length;
+                m = ds.Dimension("month").id;
+                    console.log(m);
+            
+            //Format Data
+
+                var lontakarardata = [];
+                var trendurdata = [];
+
+                var yaxislontakarar = [];
+                var yaxisfraflyting = [];
+
+                for (var i = 0; i < fLen; i++) {
+                    lontakarar = ds.Data({ "value mode": "LT", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
+                    trendur = ds.Data({ "value mode": "TR", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });                    
+
+                    for (var j = 0; j < lontakarar.length; j++) {
+                         var month = m[j];
+
+                        yaxislontakarar.push[lontakarar[j]];
+                        lontakarardata.push([Date.parse(year[i] + "-" + month), lontakarar[j]]);
+                        trendurdata.push([Date.parse(year[i] + "-" + month), trendur[j]]);
+
+                    }
+                }
+
+
+                var chart5_last_month = lontakarardata[lontakarardata.length - 1];
+                chart5_last_month = chart5_last_month[0];
+
+                //Build Series
+                var createdSeries = [{
+                    name: 'Løntakarar',
+                    data: lontakarardata,
+                    color: '#7fb800',
+                    borderWidth: 0,
+                    tooltip: {
+                        valueDecimals: 0
+                    }
+                }, {
+                    name: 'Trendur',
+                    type: 'spline',
+                    data: trendurdata,
+                    color: '#fff',
+                    borderWidth: 0,
+                    tooltip: {
+                        valueDecimals: 0
+                    },
+                    marker: {
+                        enabled: false
+                    }
+                }];
+                chart5CreatedSeries = createdSeries;
+
+
+                //Build Title
+                var title = ds.label;
+
+                //Build subtitle
+                var subtitle = ds.source;
+
+                //Build Tooltip
+                var tooltipFunction = function () {
+                    var s = '<b>' + Highcharts.dateFormat('%Y-%b', this.x) + '</b>';
+                    $.each(this.points,
+                        function (i, point) {
+                            s += '<br/>' + point.series.name + ': ' + Highcharts.numberFormat(point.y, .0, ',', '.');
+                        });
+
+                    return s;
+                }
+
+                //Build Chart
+                $('#chart5').highcharts({
+                    credits: {
+                        enabled: false
+                    },
+                    chart: {
+                        type: 'column',
+                        backgroundColor: "rgba(255, 255, 255, 0)",
+                        borderWidth: 0,
+                        renderTo: 'container',
+                        events: {
+                            load: function () {
+                                chart5 = this;
+                            }
+
+                        }
+                    },
+                    rangeSelector: {
+                        enabled: false
+                    },
+
+                    exporting: {
+                        enabled: false
+                    },
+
+                    navigator: {
+                        enabled: false
+                    },
+                    title: {
+                        text: ""
+                    },
+                    legend: {
+                        layout: 'horizontal',
+                        align: 'center',
+                        verticalAlign: 'top',
+
+                        itemStyle: {
+                            color: '#fff',
+                            fontWeight: 'normal'
+                        }
+                    },
+                    xAxis: {
+                        title: {
+                            enabled: false
+                        },
+                        type: 'datetime',
+                        min: chart5_last_month - 65743595833, 
+                        max: chart5_last_month,
+                        labels: {
+                            style: {
+                                color: '#fff',
+                                font: '11px Trebuchet MS, Verdana, sans-serif'
+                            }
+                        },
+
+                    },
+                    yAxis: {
+                        title: {
+                            text: '',
+                            style: {
+                                color: '#fff',
+                                fontWeight: 'normal',
+                                fontSize: '12px',
+                                fontFamily: 'Trebuchet MS, Verdana, sans-serif'
+                            }
+                        },
+                        lineColor: '#fff',
+                        tickColor: '#fff',
+                        labels: {
+                            formatter: function () {
+                                return Highcharts.numberFormat(this.value, 0);
+                            },
+                            style: {
+                                color: '#fff',
+                                font: '11px'
+                            }
+                        },
+                    },
+                    tooltip: {
+                        formatter: tooltipFunction,
+                        shared: true
+                    },
+                    plotOptions: {
+                        series: {
+                            stacking: 'normal',
+                            showInNavigator: true,
+                        }
+                    },
+                    series: []
+                });
+            }
+
+            function loadDataAndBuildChart5() {
+                POST("http://statbank.hagstova.fo/api/v1/fo/H2/AM/AM03/lont_ajtr.px", {
+                    "query": [
+                        {
+                            "code": "value mode",
+                            "selection": {
+                                "filter": "item",
+                                "values": [
+                                    "LT", "TR"
+                                ]
+                            }
+                        }
+                    ],
+                    "response": {
+                        "format": "json-stat"
+
+                    }
+                },function(data) {
+                    chart5Data = data;
+                    drawChart5();
+                    startAnimatingChart5();
+                } );
+            }
 
 
 
@@ -1282,6 +1510,7 @@
                 loadDataAndBuildChart2();
                 loadDataAndBuildChart3();                
                 loadDataAndBuildChart4();
+                loadDataAndBuildChart5();
                 loadDataAndBuildChart6(); 
             });
 </script>
@@ -1347,6 +1576,21 @@
             </div>
         </section>
 
+
+        <section data-background="assets/arbeidsloysi.jpg" data-background-transition="fade" data-autoslide="4000">
+            <h1>Løntakarar</h1>
+        </section>
+        <section data-state="lontakarar" data-background="assets/arbeidsloysi.jpg">
+            <div class="infobox blue left">
+                <div class="background"></div>
+                <h2>Løntakarar<h2/>
+                    <div>
+                        <div id="chart5"></div>
+                    </div>
+            </div>
+        </section>
+
+
         <section data-background="assets/fatakravadi.jpg" data-autoslide="4000">
             <h1>Fátækraváði</h1>
         </section>
@@ -1408,6 +1652,11 @@
 
             Reveal.addEventListener('arbeidsloysi', function () {
                 startAnimatingChart4();
+            }, false);
+
+
+            Reveal.addEventListener('lontakarar', function () {
+                startAnimatingChart5();
             }, false);
 
             Reveal.addEventListener('fragmentshown', function (event) {
