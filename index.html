@@ -38,9 +38,7 @@
     <script type="text/javascript">
 
 
-//---------------------------------------------------------
-//                    HIGHCHARTS SETUP
-//---------------------------------------------------------
+
 
       Highcharts.setOptions({
       lang: {
@@ -83,6 +81,8 @@
 
                 //2. Animate in chart for this year
                 chart1Timeout0 = setTimeout(function() {                    
+
+
                     drawChart1();
                 }, 100);
 
@@ -132,6 +132,19 @@
                 chart1_last_month = chart1_last_month[0];
 
 
+                // set up the updating of the chart each second
+                len = folkataldata.length;
+
+                //set marker on last point
+                folkataldata[len - 1].push({
+                    marker: {
+                        enabled: true
+                    }
+                });
+
+
+
+
                 //Build Series
                 var createdSeries = [{
                     name: 'Fólkatal',
@@ -171,6 +184,7 @@
                         backgroundColor: "rgba(255, 255, 255, 0)",
                         borderWidth: 0,
                         renderTo: 'container',
+                        marginRight: 10,
                         events: {
                             load: function () {
                                 chart1 = this;
@@ -213,7 +227,7 @@
                             style: {
                                 color: '#fff',
                                 font: '11px Trebuchet MS, Verdana, sans-serif'
-                            }
+                            },
                         }
                     },
                     yAxis: {
@@ -250,11 +264,26 @@
                     plotOptions: {
                         line: {
                             marker: {
-                                enabled: false
+                                enabled: false,
+                            },
+                            dataLabels: {
+                                enabled: true,
+                                color: '#FFF',
+                                useHTML: true,
+                                crop: false,
+                                overflow: false,                              
+                                formatter: function() {
+                                  var last  = this.series.data[this.series.data.length - 1];
+                                  if (this.point.category === last.category  && this.point.y === last.y) {
+                                    
+                                    return ('<div class="MyDataLabelTooltip">' + '<span class="datetext">' +  Highcharts.dateFormat('%e. %b %y',this.point.x) + "</span>" +  " <br />" +  this.point.y + "</div>");
+                                  }
+                                  else {return};
+                                }                             
                             }
                         },
                         series: {
-                            showInNavigator: true
+                            showInNavigator: true,                         
                         }
                     },
                     series: createdSeries
