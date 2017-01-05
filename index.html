@@ -276,7 +276,7 @@
                                   var last  = this.series.data[this.series.data.length - 1];
                                   if (this.point.category === last.category  && this.point.y === last.y) {
                                     
-                                    return ('<div class="MyDataLabelTooltip">' + '<span class="datetext">' +  Highcharts.dateFormat('%e. %b %y',this.point.x) + "</span>" +  " <br />" +  this.point.y + "</div>");
+                                    return ('<div class="MyDataLabelTooltip">' + '<span class="datetext">' +  Highcharts.dateFormat('%e. %b &apos;%y',this.point.x) + "</span>" +  " <br />" +  Highcharts.numberFormat(this.point.y,0)  + "</div>");
                                   }
                                   else {return};
                                 }                             
@@ -1022,7 +1022,22 @@
                         line: {
                             marker: {
                                 enabled: false
-                            }
+                            },
+                            dataLabels: {
+                                enabled: true,
+                                color: '#FFF',
+                                useHTML: true,
+                                crop: false,
+                                overflow: false,                              
+                                formatter: function() {
+                                  var last  = this.series.data[this.series.data.length - 1];
+                                  if (this.point.category === last.category  && this.point.y === last.y) {
+                                    
+                                    return ('<div class="MyDataLabelTooltip">' + '<span class="datetext">' +  Highcharts.dateFormat('%b &apos;%y',this.point.x) + "</span>" +  " <br />" +  Highcharts.numberFormat(this.point.y,1) + "%" + "</div>");
+                                  }
+                                  else {return};
+                                }                             
+                            }                            
                         },
                         series: {
                             showInNavigator: true
