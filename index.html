@@ -37,6 +37,36 @@
 
     <script type="text/javascript">
 
+
+//---------------------------------------------------------
+//                    HIGHCHARTS SETUP
+//---------------------------------------------------------
+
+      Highcharts.setOptions({
+      lang: {
+        decimalPoint: ",",
+        thousandsSep: " ",
+        shortWeekdays: ["Mán", "Týs", "Mik", "Hós", "Frí", "Ley", "Sun"],
+        weekdays: ["Mánadagur", "Týsdagur", "Mikudagur", "Hósdagur", "Fríggjadagur", "Leygardagur", "Sunnudagur"],
+        shortMonths: ["Jan", "Feb", "Mar", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Des"],
+        months: ["Januar", "Februar", "Mars", "Apríl", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Desember"],
+        downloadJPEG: "Goym JPEG mynd",
+        downloadPDF: "Goym PDF skjal",
+        downloadPNG: "Goym PNG mynd",
+        downloadSVG: "Goym SVG vektor mynd",
+        loading: "lesi inn...",
+        printChart: "Prenta",
+        rangeSelectorFrom: "Frá",
+        rangeSelectorTo: "Til",
+        resetZoom: "Nullstilla zoom",
+        resetZoomTitle: "Nullstilla zoom level 1:1"
+      }
+    });
+
+
+
+
+
 //---------------------------------------------------------
 //                                CHART 1
 //---------------------------------------------------------
@@ -184,9 +214,7 @@
                                 color: '#fff',
                                 font: '11px Trebuchet MS, Verdana, sans-serif'
                             }
-                        },
-                        showLastLabel: true,
-                        endOnTick: true
+                        }
                     },
                     yAxis: {
                         title: {
@@ -454,9 +482,7 @@
                                 color: '#fff',
                                 font: '11px Trebuchet MS, Verdana, sans-serif'
                             }
-                        },
-                        showLastLabel: true,
-                        endOnTick: true
+                        }
                     },
                     yAxis: {
                         title: {
@@ -720,9 +746,7 @@
                                 color: '#fff',
                                 font: '11px Trebuchet MS, Verdana, sans-serif'
                             }
-                        },
-                        showLastLabel: true,
-                        endOnTick: true
+                        }
                     },
                     yAxis: {
                         title: {
@@ -934,9 +958,7 @@
                                 color: '#fff',
                                 font: '11px Trebuchet MS, Verdana, sans-serif'
                             }
-                        },
-                        showLastLabel: true,
-                        endOnTick: true
+                        }
 
                     },
                     yAxis: {
@@ -1194,7 +1216,7 @@
                             }
                         },
                         showLastLabel: true,
-                        endOnTick: true
+ 
                     },
                     yAxis: {
                         title: {
