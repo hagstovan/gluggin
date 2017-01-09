@@ -1707,8 +1707,8 @@
                         }
 
 
-                        innflutningurdata.push([Date.parse(year[i] + "-" + month), innflutningur[j]/1000]);
-                        utflutningurdata.push([Date.parse(year[i] + "-" + month), -utflutningur[j]/1000]);
+                        innflutningurdata.push([Date.parse(year[i] + "-" + month), -innflutningur[j]/1000]);
+                        utflutningurdata.push([Date.parse(year[i] + "-" + month), utflutningur[j]/1000]);
                         nettoflytingdata.push([Date.parse(year[i] + "-" + month), (utflutningur[j] - innflutningur[j])/1000]);
 
 
@@ -1721,16 +1721,16 @@
 
                 //Build Series
                 var createdSeries = [{
-                    name: 'Innflutningur',
-                    data: innflutningurdata,
+                    name: 'Útflutningur',
+                    data: utflutningurdata,
                     color: '#7fb800',
                     borderWidth: 0,
                     tooltip: {
                         valueDecimals: 0
                     }
                 }, {
-                    name: 'Útflutningur',
-                    data: utflutningurdata,
+                    name: 'Innflutningur',
+                    data: innflutningurdata,
                     color: '#00a6ed',
                     borderWidth: 0,
                     
