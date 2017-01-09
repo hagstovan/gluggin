@@ -1,5 +1,5 @@
 # gluggin
-Statistics Faroe Islands Infochart kiosk based on 
+Statistics Faroe Islands Infochart kiosk prototype based on 
 
 * [reveal.js](https://github.com/hakimel/reveal.js)
 * [HighCharts](http://www.highcharts.com/)
