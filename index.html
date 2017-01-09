@@ -1971,6 +1971,379 @@
 
 
 //---------------------------------------------------------
+//                                CHART 8
+//---------------------------------------------------------
+            var chart8; 
+            var chart8Data;
+            var chart8CreatedSeries;
+            var chart8_last_month;
+            var chart8Timeout0;
+            var chart8Timeout1;
+            var chart8Timeout2;            
+            var chart8Timeout3;
+            var chart8Timeout4;
+
+            function startAnimatingChart8() {
+                clearTimeout(chart8Timeout0);
+                clearTimeout(chart8Timeout1);
+                clearTimeout(chart8Timeout2);
+                clearTimeout(chart8Timeout3);
+                clearTimeout(chart8Timeout4);
+
+                drawChart8();
+
+                chart8Timeout0 = setTimeout(function() {
+                    chart8.addSeries(chart8CreatedSeries[0]);    
+                }, 100);
+                chart8Timeout1 = setTimeout(function() {
+                    chart8.addSeries(chart8CreatedSeries[1]);    
+                }, 2000);
+                chart8Timeout2 = setTimeout(function() {
+                    chart8.addSeries(chart8CreatedSeries[2]);    
+                }, 4000);
+                chart8Timeout3 = setTimeout(function() {
+                    chart8.addSeries(chart8CreatedSeries[3]);    
+                }, 6000);
+
+                chart8Timeout4 =setTimeout(function () {
+                    chart8.update({xAxis: {
+                        min: null,
+                        max: null,
+                    }});
+                }, 25000);
+            }
+
+            //Chart 8 specific functions
+            function drawChart8() {
+                
+                var jsonStatData = chart8Data;
+                //Extrat Data From JSON Stat
+                ds = JSONstat(jsonStatData).Dataset(0);
+                t = ds.Dimension("year").length - 1;
+                year = ds.Dimension("year").id;
+                var fLen = year.length;
+                m = ds.Dimension("month").id;
+                    
+            
+            //Format Data
+
+                var onnurfiskaslogdata = [];
+                var toskurhysaupsidata = [];
+                var makrelursildsvartkjafturdata = [];
+                var alifiskurdata = [];
+
+                for (var i = 0; i < fLen; i++) {
+                    var onnurfiskaslog = ds.Data({"commodity group": "48", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
+                    var toskur = ds.Data({"commodity group": "1", "year": ds.Dimension("year").id[i] }, false);
+                    var hysa = ds.Data({"commodity group": "9", "year": ds.Dimension("year").id[i] }, false);
+                    var upsi = ds.Data({"commodity group": "14", "year": ds.Dimension("year").id[i] }, false);
+                    var makrelur = ds.Data({"commodity group": "40", "year": ds.Dimension("year").id[i] }, false);
+                    var sild = ds.Data({"commodity group": "35", "year": ds.Dimension("year").id[i] }, false);
+                    var svartkjaftur = ds.Data({"commodity group": "30", "year": ds.Dimension("year").id[i] }, false);
+                    var laksur = ds.Data({"commodity group": "20", "year": ds.Dimension("year").id[i] }, false);
+                    var sil = ds.Data({"commodity group": "26", "year": ds.Dimension("year").id[i] }, false);
+                    var raekjur = ds.Data({"commodity group": "44", "year": ds.Dimension("year").id[i] }, false);
+
+                    for (var j = 0; j < onnurfiskaslog.length; j++) {
+                        var month = m[j];
+                        if(month.length == 1) {
+                            month = "0" + month;
+                        }
+                        onnurfiskaslogdata.push([Date.parse(year[i] + "-" + month), (onnurfiskaslog[j] + raekjur[j])*0.001]);
+                        toskurhysaupsidata.push([Date.parse(year[i] + "-" + month), (toskur[j] + hysa[j] + upsi[j])*0.001]);
+                        alifiskurdata.push([Date.parse(year[i] + "-" + month), (laksur[j] + sil[j])*0.001]);
+                        makrelursildsvartkjafturdata.push([Date.parse(year[i] + "-" + month), (makrelur[j] + sild[j] + svartkjaftur[j])*0.001]);
+                    }
+                }
+
+
+
+
+                var chart8_last_month = onnurfiskaslogdata[onnurfiskaslogdata.length - 1];
+                chart8_last_month = chart8_last_month[0];
+
+                //Build Series
+                var createdSeries = [
+                {
+                    name: 'Toskur, hýsa, upsi',
+                    data: toskurhysaupsidata,
+                    color: '#012169',
+                    tooltip: {
+                        valueDecimals: 1
+                    },
+                    legendIndex:1,
+                    index: 3
+                },
+                {
+                    name: 'Makrelur, sild, svartkjaftur',
+                    data: makrelursildsvartkjafturdata,
+                    color: '#00a6ed',
+                    tooltip: {
+                        valueDecimals: 1
+                    },
+                    legendIndex:2,
+                    index: 2
+                },
+                {
+                    name: 'Alifiskur',
+                    data: alifiskurdata,
+                    color: '#f6511d',
+                    tooltip: {
+                        valueDecimals: 1
+                    },
+                    legendIndex:3,
+                    index: 1
+                },                
+                {
+                    name: 'Onnur fiskasløg',
+                    data: onnurfiskaslogdata,
+                    color: '#f7b358',
+                    tooltip: {
+                        valueDecimals: 1
+                    },
+                    legendIndex:4,
+                    index: 0
+                }
+                ];
+                chart8CreatedSeries = createdSeries;
+
+
+                //Build Title
+                var title = ds.label;
+
+                //Build subtitle
+                var subtitle = ds.source;
+
+                //Build Tooltip
+                var tooltipFunction = function () {
+                    var s = '<b>' + Highcharts.dateFormat('%Y-%b', this.x) + '</b>';
+                    $.each(this.points,
+                        function (i, point) {
+                            s += '<br/>' + point.series.name + ': ' + Highcharts.numberFormat(point.y, .0, ',', '.');
+                        });
+
+                    return s;
+                }
+
+                //Build Chart
+                $('#chart8').highcharts({
+                    credits: {
+                        enabled: false
+                    },
+                    chart: {
+                        type: 'column',
+                        backgroundColor: "rgba(255, 255, 255, 0)",
+                        borderWidth: 0,
+                        renderTo: 'container',
+                        events: {
+                            load: function () {
+                                chart8 = this;
+                            }
+
+                        }
+                    },
+                    rangeSelector: {
+                        enabled: false
+                    },
+
+                    exporting: {
+                        enabled: false
+                    },
+
+                    navigator: {
+                        enabled: false
+                    },
+                    title: {
+                        text: ""
+                    },
+                    legend: {
+                        layout: 'horizontal',
+                        align: 'center',
+                        verticalAlign: 'top',
+
+                        itemStyle: {
+                            color: '#fff',
+                            fontWeight: 'normal'
+                        }
+                    },
+                    xAxis: {
+                        title: {
+                            enabled: false
+                        },
+                        type: 'datetime',
+                        min: chart8_last_month - 65743595833, 
+                        max: chart8_last_month,
+                        labels: {
+                            style: {
+                                color: '#fff',
+                                font: '11px Trebuchet MS, Verdana, sans-serif'
+                            }
+                        },
+                        showLastLabel: true,
+ 
+                    },
+                    yAxis: {
+                        title: {
+                            text: '',
+                            style: {
+                                color: '#fff',
+                                fontWeight: 'normal',
+                                fontSize: '12px',
+                                fontFamily: 'Trebuchet MS, Verdana, sans-serif'
+                            }
+                        },
+                        min: 0,
+                        lineColor: '#fff',
+                        tickColor: '#fff',
+                        labels: {
+                            formatter: function () {
+                                return Highcharts.numberFormat(this.value, 0);
+                            },
+                            style: {
+                                color: '#fff',
+                                font: '11px'
+                            }
+                        },
+                    },
+                    tooltip: {
+                        formatter: tooltipFunction,
+                        shared: true
+                    },
+                    plotOptions: {
+                        column: {
+                            stacking: 'normal',
+                            borderWidth: 0                
+                        },                           
+                        series: {
+                            stacking: 'normal',
+                            showInNavigator: true,
+                            dataGrouping:{
+                                enabled: true,
+                                type: 'column',                      
+                                approximation: "sum",
+                                units:[ ['year', [null]]]
+                            }                            
+                        },                        
+
+                    },
+                    series: []
+                });
+            }
+
+            function loadDataAndBuildChart8() {
+                POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_ututgr.px", {
+                    "query": [
+                        {
+                            "code": "unit",
+                            "selection": {
+                                "filter": "item",
+                                "values": [
+                                    "0"
+                                ]
+                            }
+                        },
+                        {
+                          "code": "commodity group",
+                          "selection": {
+                            "filter": "item",
+                            "values": [
+                              "0",
+                              "1",
+                              "9",
+                              "14",
+                              "20",
+                              "26",
+                              "30",
+                              "35",
+                              "40",
+                              "44",
+                              "48"
+                            ]
+                          }
+                        },                        
+                        {
+                            "code": "month",
+                            "selection": {
+                                "filter": "item",
+                                "values": [
+                                    "1",
+                                    "2",
+                                    "3",
+                                    "4",
+                                    "5",
+                                    "6",
+                                    "7",
+                                    "8",
+                                    "9",
+                                    "10",
+                                    "11",
+                                    "12"
+                                ]
+                            }
+                        }
+                    ],
+                    "response": {
+                        "format": "json-stat"
+
+                    }
+                },function(data) {
+                    chart8Data = data;
+                    drawChart8();
+                    startAnimatingChart8();
+                } );
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//---------------------------------------------------------
 //                       CHART 9
 //---------------------------------------------------------
             var chart9; 
@@ -2464,6 +2837,7 @@
                 loadDataAndBuildChart5();
                 loadDataAndBuildChart6();
                 loadDataAndBuildChart7();
+                loadDataAndBuildChart8();  
                 loadDataAndBuildChart9();                
                 loadDataAndBuildChart10(); 
             });
@@ -2567,13 +2941,28 @@
             <div class="infobox blue">
                 <div class="background"></div>
                 <h2>Inn- og útflutningur<h2/>
-                <p>í mío. kr.</p>
+                <p>í mió. kr.</p>
                     <div>
                         <div id="chart7"></div>
                     </div>
             </div>
         </section>
 
+
+
+        <section data-background="assets/fiskavoruutflutningur.jpg" data-autoslide="4000">
+            <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />Fiskavørur</h1>
+        </section>
+        <section data-state="fiskavoruutflutningur" data-background="assets/fiskavoruutflutningur.jpg">
+            <div class="infobox blue">
+                <div class="background"></div>
+                <h2>Útflutningur av fiskavørum<h2/>
+                <p>í mió. kr.</p>
+                    <div>
+                        <div id="chart8"></div>
+                    </div>
+            </div>
+        </section>
 
         <section data-background="assets/gistingar.jpg" data-background-transition="fade" data-autoslide="4000">
             <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />Gistingar</h1>
@@ -2665,6 +3054,10 @@
                 startAnimatingChart7();
             }, false);
 
+            Reveal.addEventListener('fiskavoruutflutningur', function () {
+                startAnimatingChart8();
+            }, false);
+
             Reveal.addEventListener('gistingar', function () {
                 startAnimatingChart9();
             }, false);
@@ -2672,6 +3065,9 @@
 
             Reveal.addEventListener('fragmentshown', function (event) {
                 // Fragmentlistener
+
+
+
 
 
 
