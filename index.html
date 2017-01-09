@@ -530,7 +530,7 @@
                         tickColor: '#fff',
                         labels: {
                             formatter: function () {
-                                return Math.abs(Highcharts.numberFormat(this.value, 0));
+                                return Highcharts.numberFormat(Math.abs(this.value),0);
                             },
                             style: {
                                 color: '#fff',
@@ -794,7 +794,7 @@
                         tickColor: '#fff',
                         labels: {
                             formatter: function () {
-                                return Math.abs(Highcharts.numberFormat(this.value, 0));
+                                return Highcharts.numberFormat(Math.abs(this.value), 0);
                             },
                             style: {
                                 color: '#fff',
