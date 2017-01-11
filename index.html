@@ -1008,9 +1008,10 @@
                         },
                         lineColor: '#fff',
                         tickColor: '#fff',
+                        tickInterval: 0.5,
                         labels: {
                             formatter: function () {
-                                return this.value + ' %';
+                                return Highcharts.numberFormat(this.value, 1) + ' %';
                             },
                             style: {
                                 color: '#fff',
@@ -1834,7 +1835,7 @@
                         tickColor: '#fff',
                         labels: {
                             formatter: function () {
-                                return Math.abs(this.value);
+                                return Highcharts.numberFormat(Math.abs(this.value),0);
                             },
                             style: {
                                 color: '#fff',
@@ -2998,8 +2999,8 @@
                         tickInterval: 7889238000,
                         labels: {
                             formatter: function() {
-                                return Highcharts.dateFormat('%yQ', this.value) +
-                                    (parseInt(Highcharts.dateFormat('%m', this.value)/3)+1);
+                                return "Q" + (parseInt(Highcharts.dateFormat('%m', this.value)/3)+1) + " '"+ Highcharts.dateFormat('%y', this.value)
+                                    ;
                             },
                             style: {
                                 color: '#fff',
@@ -3023,7 +3024,7 @@
                         tickColor: '#fff',
                         labels: {
                             formatter: function () {
-                                return Highcharts.numberFormat(this.value,0) + '';
+                                return Highcharts.numberFormat(this.value,1) + '';
                             },
                             style: {
                                 color: '#fff',
@@ -3495,7 +3496,7 @@
             <div class="infobox blue">
                 <div class="background"></div>
                 <h2>Avreiðingar av botnfiski<h2/>
-                <p>tons</p>
+                <p>í tonsum</p>
                     <div>
                         <div id="chart13"></div>
                     </div>
