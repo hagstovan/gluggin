@@ -2081,7 +2081,7 @@
                 {
                     name: 'Alifiskur',
                     data: alifiskurdata,
-                    color: '#9b1212',
+                    color: '#f7b538',
                     tooltip: {
                         valueDecimals: 1
                     },
@@ -2288,6 +2288,327 @@
                     startAnimatingChart8();
                 } );
             }
+
+
+
+
+
+
+
+
+//---------------------------------------------------------
+//                                CHART 13
+//---------------------------------------------------------
+            var chart13; 
+            var chart13Data;
+            var chart13CreatedSeries;
+            var chart13_last_month;
+            var chart13Timeout0;
+            var chart13Timeout1;
+            var chart13Timeout2;            
+            var chart13Timeout3;
+            var chart13Timeout4;
+
+            function startAnimatingChart13() {
+                clearTimeout(chart13Timeout0);
+                clearTimeout(chart13Timeout1);
+                clearTimeout(chart13Timeout2);
+                clearTimeout(chart13Timeout3);
+                clearTimeout(chart13Timeout4);
+
+                drawChart13();
+
+                chart13Timeout0 = setTimeout(function() {
+                    chart13.addSeries(chart13CreatedSeries[0]);    
+                }, 100);
+                chart13Timeout1 = setTimeout(function() {
+                    chart13.addSeries(chart13CreatedSeries[1]);    
+                }, 2000);
+                chart13Timeout2 = setTimeout(function() {
+                    chart13.addSeries(chart13CreatedSeries[2]);    
+                }, 4000);
+                chart13Timeout3 = setTimeout(function() {
+                    chart13.addSeries(chart13CreatedSeries[3]);    
+                }, 6000);
+
+                chart13Timeout4 =setTimeout(function () {
+                    chart13.update({xAxis: {
+                        min: null,
+                        max: null,
+                    }});
+                }, 25000);
+            }
+
+            //Chart 13 specific functions
+            function drawChart13() {
+                
+                var jsonStatData = chart13Data;
+                //Extrat Data From JSON Stat
+                ds = JSONstat(jsonStatData).Dataset(0);
+                t = ds.Dimension("year").length - 1;
+                year = ds.Dimension("year").id;
+                var fLen = year.length;
+                m = ds.Dimension("month").id;
+                console.log(ds.Dimension("month").id);
+            
+            //Format Data
+
+                var annarbotnfiskurdata = [];
+                var toskurdata = [];
+                var hysadata = [];
+                var upsidata = [];
+
+                for (var i = 0; i < fLen; i++) {
+                    var annarbotnfiskur = ds.Data({"species": "1", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
+                    var toskur = ds.Data({"species": "2", "year": ds.Dimension("year").id[i] }, false);
+                    var hysa = ds.Data({"species": "3", "year": ds.Dimension("year").id[i] }, false);
+                    var upsi = ds.Data({"species": "6", "year": ds.Dimension("year").id[i] }, false);
+
+                    for (var j = 0; j < annarbotnfiskur.length; j++) {
+                        var month = m[j];
+                        if(month.length == 1) {
+                            month = "0" + month;
+                        }
+                        annarbotnfiskurdata.push([Date.parse(year[i] + "-" + month), (annarbotnfiskur[j] - toskur[j] - hysa[j] - upsi[j])]);
+                        toskurdata.push([Date.parse(year[i] + "-" + month), (toskur[j])]);
+                        hysadata.push([Date.parse(year[i] + "-" + month), (hysa[j])]);
+                        upsidata.push([Date.parse(year[i] + "-" + month), (upsi[j])]);
+                    }
+                }
+
+
+
+
+                var chart13_last_month = annarbotnfiskurdata[annarbotnfiskurdata.length - 1];
+                chart13_last_month = chart13_last_month[0];
+
+                //Build Series
+                var createdSeries = [
+                {
+                    name: 'Toskur',
+                    data: toskurdata,
+                    color: '#000E30',
+                    tooltip: {
+                        valueDecimals: 1
+                    },
+                    legendIndex:1,
+                    index: 3
+                },
+                {
+                    name: 'Hýsa',
+                    data: hysadata,
+                    color: '#00a6ed',
+                    tooltip: {
+                        valueDecimals: 1
+                    },
+                    legendIndex:2,
+                    index: 2
+                },
+                {
+                    name: 'Upsi',
+                    data: upsidata,
+                    color: '#f7b538',
+                    tooltip: {
+                        valueDecimals: 1
+                    },
+                    legendIndex:3,
+                    index: 1
+                },                
+                {
+                    name: 'Annar botnfiskur',
+                    data: annarbotnfiskurdata,
+                    color: '#C6E0FF',
+                    tooltip: {
+                        valueDecimals: 1
+                    },
+                    legendIndex:4,
+                    index: 0
+                }
+                ];
+                chart13CreatedSeries = createdSeries;
+
+
+                //Build Title
+                var title = ds.label;
+
+                //Build subtitle
+                var subtitle = ds.source;
+
+                //Build Tooltip
+                var tooltipFunction = function () {
+                    var s = '<b>' + Highcharts.dateFormat('%Y-%b', this.x) + '</b>';
+                    $.each(this.points,
+                        function (i, point) {
+                            s += '<br/>' + point.series.name + ': ' + Highcharts.numberFormat(point.y, .0, ',', '.');
+                        });
+
+                    return s;
+                }
+
+                //Build Chart
+                $('#chart13').highcharts({
+                    credits: {
+                        enabled: false
+                    },
+                    chart: {
+                        type: 'column',
+                        backgroundColor: "rgba(255, 255, 255, 0)",
+                        borderWidth: 0,
+                        renderTo: 'container',
+                        events: {
+                            load: function () {
+                                chart13 = this;
+                            }
+
+                        }
+                    },
+                    rangeSelector: {
+                        enabled: false
+                    },
+
+                    exporting: {
+                        enabled: false
+                    },
+
+                    navigator: {
+                        enabled: false
+                    },
+                    title: {
+                        text: ""
+                    },
+                    legend: {
+                        layout: 'horizontal',
+                        align: 'center',
+                        verticalAlign: 'top',
+
+                        itemStyle: {
+                            color: '#fff',
+                            fontWeight: 'normal'
+                        }
+                    },
+                    xAxis: {
+                        title: {
+                            enabled: false
+                        },
+                        type: 'datetime',
+                        min: chart13_last_month - 65743595833, 
+                        max: chart13_last_month,
+                        labels: {
+                            style: {
+                                color: '#fff',
+                                font: '11px Trebuchet MS, Verdana, sans-serif'
+                            }
+                        },
+                        showLastLabel: true,
+ 
+                    },
+                    yAxis: {
+                        title: {
+                            text: '',
+                            style: {
+                                color: '#fff',
+                                fontWeight: 'normal',
+                                fontSize: '12px',
+                                fontFamily: 'Trebuchet MS, Verdana, sans-serif'
+                            }
+                        },
+                        min: 0,
+                        lineColor: '#fff',
+                        tickColor: '#fff',
+                        labels: {
+                            formatter: function () {
+                                return Highcharts.numberFormat(this.value, 0);
+                            },
+                            style: {
+                                color: '#fff',
+                                font: '11px'
+                            }
+                        },
+                    },
+                    tooltip: {
+                        formatter: tooltipFunction,
+                        shared: true
+                    },
+                    plotOptions: {
+                        column: {
+                            stacking: 'normal',
+                            borderWidth: 0                
+                        },                           
+                        series: {
+                            stacking: 'normal',
+                            showInNavigator: true,
+                            dataGrouping:{
+                                enabled: true,
+                                type: 'column',                      
+                                approximation: "sum",
+                                units:[ ['year', [null]]]
+                            },                            
+                            pointPadding: 0,
+                            groupPadding: 0.2                        
+                        },                        
+
+                    },
+                    series: []
+                });
+            }
+
+            function loadDataAndBuildChart13() {
+                POST("https://statbank.hagstova.fo/api/v1/fo/H2/VV/VV01/fv_avrnogd.px", {
+                    "query": [
+                        {
+                          "code": "species",
+                          "selection": {
+                            "filter": "item",
+                            "values": [
+                              "1",
+                              "2",
+                              "3",
+                              "6"
+                            ]
+                          }
+                        },
+                        {
+                          "code": "month",
+                          "selection": {
+                            "filter": "item",
+                            "values": [
+                              "1",
+                              "2",
+                              "3",
+                              "4",
+                              "5",
+                              "6",
+                              "7",
+                              "8",
+                              "9",
+                              "10",
+                              "11",
+                              "12"
+                            ]
+                            }
+                        }                        
+                      ],
+                    "response": {
+                        "format": "json-stat"
+
+                    }
+                },function(data) {
+                    chart13Data = data;
+                    drawChart13();
+                    startAnimatingChart13();
+                } );
+            }
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2756,22 +3077,19 @@
                                   "BRP"
                                 ]
                               }
+                            },
+                            {
+                              "code": "quarters",
+                              "selection": {
+                                "filter": "item",
+                                "values": [
+                                  "Q1",
+                                  "Q2",
+                                  "Q3",
+                                  "Q4"
+                                ]
+                              }
                             }
-
-
-,
-    {
-      "code": "quarters",
-      "selection": {
-        "filter": "item",
-        "values": [
-          "Q1",
-          "Q2",
-          "Q3",
-          "Q4"
-        ]
-      }
-    }
 
 
                     ],
@@ -3044,7 +3362,8 @@
                 loadDataAndBuildChart8();  
                 loadDataAndBuildChart9();
                 loadDataAndBuildChart10();                                
-                loadDataAndBuildChart12(); 
+                loadDataAndBuildChart12();
+                loadDataAndBuildChart13(); 
             });
 </script>
 
@@ -3169,6 +3488,20 @@
             </div>
         </section>
 
+        <section data-background="assets/avreidingar.jpg" data-autoslide="4000">
+            <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />Avreiðingar</h1>
+        </section>
+        <section data-state="avreidingar" data-background="assets/avreidingar.jpg">
+            <div class="infobox blue">
+                <div class="background"></div>
+                <h2>Avreiðingar av botnfiski<h2/>
+                <p>tons</p>
+                    <div>
+                        <div id="chart13"></div>
+                    </div>
+            </div>
+        </section>        
+
         <section data-background="assets/gistingar.jpg" data-background-transition="fade" data-autoslide="4000">
             <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />Gistingar</h1>
         </section>
@@ -3277,6 +3610,10 @@
 
             Reveal.addEventListener('fiskavoruutflutningur', function () {
                 startAnimatingChart8();
+            }, false);
+
+            Reveal.addEventListener('avreidingar', function () {
+                startAnimatingChart13();
             }, false);
 
             Reveal.addEventListener('gistingar', function () {

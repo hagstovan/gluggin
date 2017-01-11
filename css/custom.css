@@ -87,14 +87,14 @@ p{
     position:absolute;
     left: 0;
     height:500px;
-    width:500px;
+    width:700px;
 }
 
 .infobox.right {
     position:absolute;
     right: 0;
     height:500px;
-    width:500px;
+    width:700px;
 }
 
 /*.bluerectangle-right {
